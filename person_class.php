@@ -41,12 +41,24 @@
         }
         
         public static function all() {
-            # Connect to the database again
+                       # Connect to the database again
+            $dsn = "mysql:dbname=orm";
+            $username = "blackfist";
+
+            try {
+                $conn = new PDO($dsn, $username);
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                echo "Connection failed: " . $e->getMessage();
+            }
             
+            # Set up your sql statement
             $sql = "SELECT * FROM people";
             
             try {
                 # make a prepared statement and execute it
+                $st = $conn->prepare($sql);
+                $st->execute();
                 
                 # return the resulting rows
                 return($prep->fetchAll());
