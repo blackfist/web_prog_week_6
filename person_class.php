@@ -41,7 +41,7 @@
         }
         
         public static function all() {
-                       # Connect to the database again
+           # Connect to the database again
             $dsn = "mysql:dbname=orm";
             $username = "blackfist";
 
@@ -69,13 +69,26 @@
         
         public static function find($id) {
             # Connect to database
+            $dsn = "mysql:dbname=orm";
+            $username = "blackfist";
+
+            try {
+                $conn = new PDO($dsn, $username);
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                echo "Connection failed: " . $e->getMessage();
+            }
             
             # write an sql query to get all the data from the
             # people database where the id field is equal to what was 
             # passed in.
+            $sql = "SELECT * from people WHERE id = :id";
             
             try {
                 # created a prepared statement and execute it
+                $st = $conn->prepare($sql);
+                $st->bindValue("id", $id);
+                $st->execute();
                 $results = $prep->fetch(PDO::FETCH_ASSOC);
                 
                 # Create a Person instance and fill it in with the stuff
